@@ -1,0 +1,374 @@
+\documentclass[8pt]{extarticle}
+\usepackage[a4paper,margin=0.5in]{geometry}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{amsmath,amssymb}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{nicematrix}
+\usepackage{physics}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+
+\setlist{noitemsep, topsep=0pt}
+\pagestyle{empty}
+\tcbset{colback=gray!10, colframe=black, boxrule=0.5pt, arc=2pt, halign title=center, halign=flush left
+        %, boxsep = 1pt, left=0pt, right=0pt, bottom=0pt, top=0pt
+        }
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Alessandro Michele Berardi 308444}}\\
+    \vspace{0.5em}
+\end{center}
+
+\begin{multicols}{3}
+    \raggedcolumns
+
+    \begin{tcolorbox}[title = Progetto controllore]
+        $F(s)$: funzione del sistema \\
+        \(C(s)=\frac{K_C}{s^h}C'(s)\): controllore \\
+        $h$: numero poli nell'origine (\(s=0\)) di $C$ da determinare \\
+        $K_G = \lim_{s \to 0}{\{s^hG(s)\}}$: guadagno stazionario di una generica funzione $G$ con $h$ poli nell'origine (\(s=0\)) (diverso da $h$ riferito al controllore) \\
+        $K_C$: guadagno stazionario controllore \\
+        $K_{G_a}$: guadagno stazionario d'anello ($G_a$)\\
+        $K_F$: guadagno stazionario del sistema $F$ \\
+        $K_r$: fattore di scala \\
+        \(y_{\text{des}} = K_rr(t)\): uscita desiderata \\
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = $K_C$ statico errore inseguimento]
+        \(W_e(s) = \frac{e(s)}{r(s)} = K_r\frac{1}{1+G_a}\): fdt \\
+        \(e = y_{\text{des}} - y\): errore di inseguimento \\
+        \(e_{r,\infty} = \lim_{s \to 0}{\{se(s)\}}\): errore di inseguimento in regime permanente \\
+        NB: in caso di fattore di scalamento \boxed{\frac{1}{K_r}} sul ramo di retroazione
+        bisogna considerare
+        \begin{itemize}
+            \item \(G_a \to G_{a}/K_r = \frac{C(s)F(s)}{K_r}\)
+            \item \(K_F \to \frac{K_F}{K_r}\)
+            \item \(K_{Ga} \to \frac{K_{Ga}}{K_r} = K_CK_F\) con $K_F$ già modificato
+        \end{itemize}
+        \scalebox{0.8}{
+            \(\begin{array}{|c|c|c|c|c|}
+                \hline
+                \text{Sistema} & \varepsilon(t) & t & \frac{t^2}{2} & K_C \\
+                \hline
+                \text{tipo 0} & \frac{K_r}{1 + K_{G_a}} & \infty & \infty & \frac{K_r - e_{\max}}{K_Fe_{\max}} \\
+                \text{tipo 1} & 0 & \frac{K_r}{K_{G_a}} & \infty & \frac{K_r}{K_Fe_{\max}} \\
+                \text{tipo 2} & 0 & 0 & \frac{K_r}{K_{G_a}} & \frac{K_r}{K_Fe_{\max}} \\
+                \hline
+            \end{array}\)
+        } \\
+        NB: se \(|e_{\max}| \le x\) si calcolino i valori delle tabelle usando il modulo (\(|e_{r,\infty}| = |...|\)) e si ottiene \(|Kc| \ge |\text{formula tabella}|\) \\
+        NB: il tipo di sistema è dettato dal numero di poli nell'origine della funzione $F(s)$ \\
+        Nel caso ci siano dei disturbi, allora l'errore totale in inseguimento a r.p. vale
+        \(e_{\infty} = e_{r,\infty} - \sum_i{y_{d_i, \infty}}\)
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = Errore inseguimento sinusoide]
+        Dato un riferimento sinousidale \(r(t) = \sin(w_0t)\), l'errore di inseguimento sarà \\
+        \(e_{\text{ref}} = |S(jw_0)|_{\text{unità nat.}}\) \\
+        con \(S(jw) = \frac{1}{1+G_a(jw)}\) la \textit{funzione di sensibilità}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = $K_C$ statico disturbi polinomiali]
+        Si consideri per ogni $i$-esimo disturbo $d_i$ di valutare il suo effetto a regime permanente
+        ponendo \(y_{\text{des}} = 0\) \\
+        \(W_{di} = \frac{y(s)}{d_i(s)}\): fdt \\
+        \(y_{d,\infty} = \lim_{s \to 0}{\{sW_{di}d_i\}}\): effetto del disturbo $d_i$ in regime permanente
+        \begin{itemize}
+            \item \textbf{disturbo sull'uscita}
+                \(W_{di} = \frac{1}{1+G_a}\)
+            \item \textbf{disturbo sulla retroazione}
+                \(W_{di} = -\frac{1}{1+G_a}\)
+            \item \textbf{disturbo sul ramo diretto}
+                \(W_{di} = \frac{G_2}{1+G_1G_2} = \frac{G_2}{1+G_a}\) \\
+                In caso di fattore di scalamento \boxed{\frac{1}{K_r}} sul ramo di retroazione, porre
+                \begin{itemize}
+                    \item \(G_1 \to \frac{G_1}{Kr}\)
+                    \item \(K_{G_1} \to \frac{K_{G_1}}{Kr}\)
+                \end{itemize}
+        \end{itemize}
+        NB: se \(|y_{d_i, \max}| \le x\) si calcolino i valori delle tabelle usando il modulo (\(|e_{r,\infty}| = |...|\)) e si ottiene \(|Kc| \ge |\text{formula tabella}|\) \\
+        NB: $G_1$ tutto ciò che \textbf{precede} il disturbo, $G_2$ tutto ciò che \textbf{succede} al disturbo \\
+
+        \scalebox{0.8}{
+            \(\begin{array}{|c|c|c|c|c|}
+                \hline
+                G_a & D_{dy} & \alpha_{dy}t & \frac{t^2}{2} & K_C \\
+                \hline
+                \text{tipo 0} & \frac{D_y}{1+K_{G_a}} & \infty & - & \frac{D_y - y_{d,\max}}{K_Fy_{d,\max}} \\
+                \text{tipo 1} & 0 & \frac{\alpha_{dy}}{K_{G_a}} & - & \frac{\alpha_{dy}}{y_{d,\max}K_F} \\
+                \text{tipo 2} & 0 & 0 & - & -\\
+                \hline
+            \end{array}\)
+        }
+
+        \scalebox{0.65}{
+            \(\begin{array}{|c|c|c|c|}
+                \hline
+                G_1 & G_2 & D=D_u & K_c \\
+                \hline
+                \text{tipo 0} & \text{tipo 0} & \frac{K_{G_2}D_u}{1+K_{G_1}K_{G_2}}  & \frac{K_{G_1}K_{G_2}D_u - y_{d, \max}}{K_{G_1}K_{G_2}y_{d, \max}} \\
+                \text{tipo 0} & \text{tipo} \ge 1 & \frac{D_u}{K_{G_1}} & \frac{D_u}{y_{di,\max}K_{G_1}} \\
+                \text{tipo} \ge 1 & \forall \text{tipo} & 0 & - \\
+                \hline
+                G_1 & G_2 & D=\alpha_ut & K_c \\
+                \hline
+                \text{tipo 0} & \text{tipo 0} & \infty & - \\
+                \text{tipo 1} & \forall \text{tipo} & \frac{\alpha_u}{K_{G_1}} & \frac{\alpha_u}{y_{d, \max}K_{G_1}} \\
+                \text{tipo} \ge 2 & \forall \text{tipo} & 0 & - \\
+                \hline
+            \end{array}\)
+        }
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = Segno $K_C$]
+        \begin{itemize}
+            \item sia data la funzione ad anello aperto \(G_a = K_CG_{a,f}\)
+            \item si valuta il \textit{diagramma di Nyquist} di $G_{a,f}$
+            \item si consideri il punto critico come il punto nel piano complesso \((-\frac{1}{K_C}, 0)\)
+            \item si valutano le regioni lungo l'asse reale tale per cui è verificata l'asintotica stabilità
+        \end{itemize}
+        asintotica stabilità \(\Leftrightarrow N = -n_{i,a}\) con
+        \begin{itemize}
+            \item $N = $ somma delle rotazioni orarie (+) e antiorarie (-) attorno al punto critico
+            \item $n_{i,a} = $ numero di poli instabili ad anello aperto
+        \end{itemize}
+        NB: la rotazione di raggio infinito è SEMPRE oraria (+)
+
+        Stabilità regolare e quindi \(K_C > 0\) se \(G_{a,f}(s)\) soddisfa:
+        \begin{itemize}
+            \item guadagno positivo
+            \item tutti i zeri e poli sono stabili
+            \item una sola pulsazione $w_c$ per cui il modulo è unitario (0 dB)
+            \item una sola pulsazione per cui la fase è -180°
+        \end{itemize}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = Specifiche dinamiche]
+        \(\begin{array}{c|c}
+            \boxed{w_{c_{\text{des}}}} & \boxed{m_{\phi, \min}} \\
+            \hline
+            0.63 \cdot w_{B} & 60 -5M_{r,\max}|_{dB} \\
+            \frac{0.63 \cdot 3}{t_s} & 60 - 5(\overbrace{20\log_{10}{(\frac{1+\hat{s}}{0.9})}}^{M_r|_{dB}}) \\
+            1.5 \cdot w_m & -
+        \end{array}\)
+        La funzione d'anello che contiene il controllore \(C(s) = \frac{K_r}{s^h}C'(s)\) deve soddisfare le specifiche
+        \boxed{\text{boxed}}
+
+        Fasi della 'tecnica per tentativi':
+        \begin{itemize}
+            \item rispettare le specifiche dinamiche in un primo momento per \textit{anello aperto}
+            \item rispettare le specifiche dinamiche in un secondo momento per \textit{naello chiuso}
+        \end{itemize}
+
+        Prima di implementare le reti:
+        \begin{itemize}
+            \item  \(\text{phaseRec} = |\arg(G_a(jw_{c_{\text{des}}}))| -180° + m_{\phi_{\text{min}}}\): fase da recuperare \\
+            \item \(\text{gainRec} = 20\log_{10}{(|G_a(jw_{c_{\text{des}}})|}\)
+        \end{itemize}
+
+        Le reti compensative devono:
+        \begin{itemize}
+            \item porre massimo $\pm |1dB|$ il modulo nel punto $w_{c_{\text{des}}}$ della funzione d'anello prima di chiuderlo
+            \item recuperare la fase richiesta 
+        \end{itemize}
+
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = Rete derivativa/anticipatrice]
+        \(R_d(s) = \frac{1 + \tau_ds}{1 + \frac{\tau_d}{m_d}s} \quad \tau_d>0, m_d>1\) \\
+        introduce un aumento di fase tra lo zero e il polo \\
+        NB: \(M_d\) non più di 16, piuttosto uso più reti se devo recuperare tanta fase \\
+        Se voglio che in $w_{c_{\text{des}}}$ si abbia $m_d$ devo impostare una $\tau_d$ tale che
+        \(w_{c_{\text{des}}} \cdot \tau_d = x_d\) scegliendo la coppia di valori \(\{m_d, x_d\}\)
+        NB: se ho fase da recupare molto alta (> 60°) allora dovrò implementare una $n$-tupla ($n \ge 2$) di reti tale che \textit{minimizzi} il prodotto
+        \(m_{d_1} \cdot m_{d_2} \cdot \ldots \cdot m_{d_n}\) \\
+        Infine si calcola
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = Rete integrativa/attenuatrice]
+        \(R_i(s) = \frac{1+\frac{\tau_i}{m_i}s}{1 + \tau_is} \quad \tau_i>0, m_i>1\) \\
+        Devo attenuare modulo dopo l'uso di reti derivatrici. Si sceglie una coppia \(\{m_i, x_i\}\) per cui
+        \begin{itemize}
+            \item $m_i = $ modulo in unità naturali della fase guadagnata con le reti derivatrici
+            \item si costruisce il bode della rete naturalizzata (\(\tau_i = 1\))
+            \item $x_i$ il più piccolo possibile dopo la stabilizzazione della curva del modulo
+            \item calcolo \(\tau_i = \frac{x_i}{w_{c_{\text{des}}}}\)
+        \end{itemize}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = Zero reale negativo]
+        Nel caso di un $C$ che ha dovuto introdurre un polo in zero (\(h = 1\)) posso recuperare fase usando uno  zero piuttosto che reti derivative\\
+        \(R_z = 1+\tau_zs\) \\
+        Attraverso il bode di \(1+s\) è possibile vedere il diagramma su cui scegliere $x_z$. \\
+        \(\tau_z = \frac{x_z}{w_{c_{\text{des}}}}\)
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = Chiusura anello]
+        Si chiude l'anello con la seguente fdt
+        \(W = \frac{C(s) \cdot F(s)}{1+C(s)F(s) \cdot \text{blocco retr.}}\) \\
+        In seguito la lista di come si verificano le effettive specifiche:
+        \begin{itemize}
+            \item \textbf{banda passante}: bode di $W$ e si vede dove cadono i -3dB
+            \item \textbf{picco di risonanza}: massimo valore del bode di $W$
+            \item \textbf{tempo di salita massimo}: step response di W e si vede la prima volta che raggiunge il valore di r.p.
+            \item \textbf{sovraelongazione massima}: peak response nel grafico step response di W
+            \item \textbf{modulo della funzione di sensibilità}: \( |S(jw)|<1 \quad \forall w<w_{m} \) per cui bisogna fare il bode
+            \item \textbf{valore massimo di comando dato un riferimento (catena chiusa)}: \begin{itemize}
+                \item se $C(s)$ \textbf{non ha} poli in 0: \textit{teorema del valore iniziale} \(u(0) = Kc \cdot \frac{\prod_j{m_{d_j}}}{\prod_k{m_{i_k}}}\)
+                \item se $C(s)$ \textbf{ha} poli in 0: si studia la risposta di \(W_u = \frac{u(s)}{r(s)}  = \frac{C}{1 + G_a}\) accorciando il più possibile il grafico
+                    della risposta (che dipende da $r(s)$) (si inserisce un tempo 'limite' come 2° argomento)
+            \end{itemize}
+            \item \textbf{valore massimo di comando (catena aperta)}: si studia la risposta di $C$
+            \item \textbf{incremento comando con disturbo sinousidale}: dato \(d=A\sin(w_0t)\) allora \(u_{d,\infty} = A \cdot |W_{u,d}(jw_0)|\) con
+                \begin{itemize}
+                    \item \(W_{u,d} = \frac{u(s)}{d(s)}|_{r(s) = 0} \) (ovvero ponendo nullo il riferimento)
+                    \item $d(s)$ il disturbo sinousidale
+                \end{itemize}
+        \end{itemize}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = Accorgimenti]
+        Tips
+        \begin{enumerate}
+            \item se si inserisce un polo nell'origine aggiungere uno zero al posto di una attenuatrice \textit{aiuta}
+            \item picco risonanza eccessivo $\Rightarrow$ recuperare più fase, aumentare $K_c$, ridurre attuenuazione
+            \item banda passante errata $\Rightarrow$ provare a spostare $w_b$ sull'estremo di tolleranza. Se ciò non basta, in aggiunta cambiare il fattore $k$
+            \item sovraelongazione alta $\Rightarrow$ aumentare recupero di fase
+            \item tempo salita errato $\Rightarrow$ \begin{itemize}
+                \item aumentare $w_c$ significa aumentare la velocità di salita
+                \item diminuire $w_c$ significa diminuire la velocità di salita
+            \end{itemize}
+            \item attività sul comando alta $\Rightarrow$ inserire una rete attenuatrice o ridurre laddove possibile $m_d$
+        \end{enumerate}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = Discretizzazione]
+        Calcolo del valore $T = \frac{2\pi}{\alpha w_B}$:
+        \begin{itemize}
+            \item banda passante $w_B$ con bode di W fino ad ora
+            \item si pone $\alpha = 20$ se $T$ non viene troppo piccolo
+        \end{itemize}
+        Calcolo $G_{a, \text{zoh}} = \frac{G_a}{1 + \frac{T}{2}s}$ e poi si studiano i margini \\
+        Se $m_\phi$ è insufficente:
+        \begin{itemize}
+            \item riduco $T$ laddove è possibile
+            \item se ancora insuff., devo recuperare altra fase in $C(s)$
+        \end{itemize}
+        Controllo prestazioni in tempo discreto:
+        \begin{itemize}
+            \item \(W(z) = \frac{C(z)F(z)}{1 + C(z)F(z)}\)
+            \item step response di $W(z)$
+            \item bode di $W(z)$ da cui si può guardare picco di risonanza e banda passante
+        \end{itemize}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = Controllore PID]
+        \begin{itemize}
+            \item se il sistema ha \textbf{margine di guadagno finito} è possibile utilizzare un \textit{metodo ad anello chiuso}
+            \item se il sistema è:
+                \begin{itemize}
+                    \item stabile
+                    \item presenta una risposta al gradino simile a quella di un \textbf{sistema 1° ordine}
+                \end{itemize}
+                è possibile utilizzare un \textit{metodo ad anello aperto}
+        \end{itemize}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = Fine progetto PID]
+        Dopo aver calcolato i parametri \(K_p, T_I, T_D\), il controllore sarà della forma
+        \(R_{\text{PID}} = K_p \left( 1 + \frac{1}{T_Is} + \frac{T_Ds}{1 + \frac{T_D}{N}s} \right)\) \\
+        I valori normali di $N$ sono $N \in [5,20]$ \\
+        Il polo \(\boxed{p_d = -\frac{N}{T_D}}\) del derivatore deve essere centrato in modo tale che si \textit{molto più grande} di $w_{c_{\text{des}}}$. Quindi
+        \(\boxed{w_{c_{\text{des}}} << -\frac{N}{T_D} + 1}\) [decade]
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = Metodi ad anello chiuso]
+        Si calcolano i parametri \(\overline{K_p}, \overline{T}\) facendo margine della funzione del sistema $G(s)$:
+        \begin{itemize}
+            \item $\overline{K_p}$: margine di guadagno in unità nat.
+            \item $\overline{T} = \frac{2\pi}{w_{\text{gain}}}$ con $w_{\text{gain}}$ la fase $[\frac{\text{rad}}{s}]$ in cui si ottiene \(\overline{K_p}\)
+        \end{itemize}
+        L'obiettivo è ottenere i parametri seguenti \(K_p, T_I, T_D\):\\
+        \textbf{metodo di Ziegler-Nichols in anello chiuso} \\
+        \scalebox{0.8}{
+            \(\begin{array}{|c|c|c|c|}
+                \hline
+                 & K_p & T_I & T_D \\
+                \hline
+                P & 0.5\overline{K_p} & - & - \\
+                PI & 0.45\overline{K_p} & 0.8\overline{T} & -  \\
+                PID & 0.6\overline{K_p} & 0.5\overline{T} & 0.125\overline{T} \\
+                \hline
+            \end{array}\)
+        } \\
+        \textbf{metodo con imposizione del margine fase} \\
+        \scalebox{0.9}{
+            \(
+                \begin{array}{|c|c|}
+                    \hline
+                    K_p & \overline{K_p} \cdot \cos(m_{\phi}|_{\text{rad}}) \\
+                    \hline
+                    T_I & \frac{\overline{T}}{\pi} \cdot \frac{1+\sin(m_{\phi}|_{\text{rad}})}{\cos(m_{\phi}|_{\text{rad}})} \\
+                    \hline
+                    T_D & \frac{T_I}{4} \\
+                    \hline
+                \end{array}
+            \)
+        } \\
+        NB: \(m_{\phi}|_{\text{rad}} = \frac{m_{\phi}|_{\text{deg}}}{180} \cdot \pi\)
+
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[title = Metodi ad anello aperto]
+        Dapprima si verificano le condizioni del sistema $G$:
+        \begin{itemize}
+            \item se è stabile
+            \item se la step response è simile a 1° ordine
+        \end{itemize}
+        Dobbiamo calcolarci i parametri iniziali \(K_C, \tau_F, \theta_F\)
+        \(K_C\): valore a regime ottenuto nella step response \\
+        \(t_x\): tempo nel quale la risposta raggiunge il 63\% di $K_C$ sapendo che \(t_x = \tau_F + \theta_F\) con 
+        $\theta_F$ il gap tra $t=0$ e l'inizio del grafico (detto anche ritardo) $\to$ si guardi il punto di massima tangenza di step
+        quando tocca l'asse x
+
+
+        L'obiettivo è ottenere i parametri seguenti \(K_p, T_I, T_D\):\\
+        \textbf{metodo di Cohen-Coon} \\
+        \scalebox{0.75}{
+            \(\begin{array}{|c|c|c|c|}
+                \hline
+                 & K_p & T_I & T_D \\
+                \hline
+                P & \frac{3\tau_F + \theta_F}{3K_F\theta_F} & - & - \\
+                PI & \frac{10.8\tau_F + \theta_F}{12K_F\theta_F} & \theta_F \cdot \frac{30\tau_F + 3\theta_F}{9\tau_F + 20\theta_F} & -  \\
+                PID & \frac{16\tau_F + 3\theta_F}{12K_F\theta_F} & \theta_F \cdot \frac{32\tau_F + 6\theta_F}{13\tau_F + 8\theta_F} & \frac{4\tau_F \theta_F}{11\tau_F + 2\theta_F} \\
+                \hline
+            \end{array}\)
+        } \\
+        \textbf{metodo di Ziegler-Nichols in anello aperto} \\
+        \scalebox{0.9}{
+            \(\begin{array}{|c|c|c|c|}
+                \hline
+                 & K_p & T_I & T_D \\
+                \hline
+                P & \frac{\tau_F}{K_F\theta_F} & - & - \\
+                PI & \frac{0.9\tau_F}{K_F\theta_F} & 3\theta_F & -  \\
+                PID & \frac{1.2\tau_F}{K_F\theta_F} & 2\theta_F & 0.5\theta_F \\
+                \hline
+            \end{array}\)
+        } \\
+    \end{tcolorbox}
+
+\end{multicols}
+
+\end{document}

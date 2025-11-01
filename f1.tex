@@ -1,0 +1,540 @@
+\documentclass[8pt]{extarticle}
+\usepackage[a4paper,margin=0.5in]{geometry}
+\usepackage{multicol}
+\usepackage{amsmath,amssymb}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{nicematrix}
+\usepackage{physics}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+
+\setlist{noitemsep, topsep=0pt}
+\pagestyle{empty}
+\tcbset{black_style/.style={colback=gray!10, colframe=black, boxrule=0.5pt, arc=2pt, halign title=center, halign=flush left}}
+\tcbset{blue_style/.style={colback=gray!10, colframe=blue, boxrule=0.5pt, arc=2pt, halign title=center, halign=flush left}}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Alessandro Michele Berardi 308444}}\\
+    \vspace{0.5em}
+\end{center}
+
+\begin{tcolorbox}[ black_style, title = Classificazione Sistemi]
+    \begin{center}
+        \begin{tabular}{|l|l|l|l|}
+            \hline
+            \textbf{Dinamico} & eq. diff o eq. alle differenze & \textbf{Statico} & altrimenti \\
+            \hline
+            \textbf{Tempo continuo} & variabile $t$ ($s$ trasf.) & \textbf{Tempo discreto} & variabile $k$ ($z$ trasf.)\\
+            \hline
+            \textbf{SISO} & 1 ingresso 1 uscita & \textbf{MIMO} & più ingressi e/o più uscite \\
+            \hline
+            \textbf{Dimensione finita} & numero var. di stato \textit{finito} & \textbf{Dimensione infinita} & altrimenti \\
+            \hline
+            \textbf{Lineare} & altrimenti & \textbf{Non lineare} & potenze nelle equazioni \\
+            \hline
+            \textbf{Invariante} & var. di tempo esplicita & \textbf{Variante} & altrimenti \\
+            \hline
+            \textbf{Proprio} & $u$ compare nell'eq. di uscita & \textbf{Improprio} & altrimenti \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{tcolorbox}
+
+\begin{multicols}{3}
+    \raggedcolumns
+
+    \begin{tcolorbox}[ black_style, title = Sistemi elettrici]
+        \(i_c=C\dv{V_C}{t}=\frac{C}{s}, \quad V_L=L\dv{i_L}{t}=sL\) \\
+        Var. stato: \(V_C, i_L\) \\
+        Var. ingresso: \(i, e\)
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title=DC motor]
+        In generale
+        \(v_a = R_ai_a(t) + L_a\dv{i_a}{t} + (e = K\phi \dot{\theta}(t))\)
+        \(v_e = R_ei_e(t) + L_e\dv{i_e}{t}\)
+        \(J\ddot{\theta}(t) = T_m - T_r(t) - \beta \dot{\theta}(t)\)
+        \begin{itemize}
+            \item \textbf{Armatura ($\overline{\phi}, \overline{i_e}$ cost)}
+                \(T_m = K\overline{\phi}i_a(t)\)
+            \item \textbf{Eccitazione ($i_a$ cost)}
+                \(T_m = K\phi \overline{i_a}\)
+        \end{itemize}
+        Var. stato: \{\(i_a(t) \vee   i_e(t), \theta(t), \dot{\theta}(t)\)\} \\
+        Var. ingresso: \(\{v_a(t) \vee v_e(t), T_r(t)\}\) \\
+        Eq. dinam. : eq. motore (solo per la tensione non cost.) + equazioni alberi
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Sistemi termici]
+        \(C_i\dot{\theta}_i(t) = \sum_k{p_k^{\text{est}}} - \sum_{j \not= i}{p_{ij}^{\text{int}}}\) \\
+        Var. stato: \(\{\theta_i\}\) \\
+        Var. ingresso: \(\{p_0, \theta_{\text{int}}, \theta_{\text{est}}\}\)
+        \(p_{ij}^{\text{int}} = K_{ij}[\theta_i(t) - \theta_j(t)]\)
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Movimento LTI TC]
+        % \(\begin{cases}
+        %    \dot{x}(t) = ax(t) + bu(t) \\
+        %    y = cx(t) + du(t)
+        % \end{cases}\) \\
+        $n$ eq. diff., $p$ ingressi, $q$ uscite\\
+        \(A=n\times n, B=n \times p, C=q \times n, D = q \times p\) \\
+        \(X(s) = \overbrace{(sI-A)^{-1}}^{H_0^x(s)}x(0) + \overbrace{(sI-A)^{-1}B}^{H_f(s)}u(s)\)
+        \(Y(s) = \overbrace{C(sI-A)^{-1}}^{H_0(s)}x(0) + \overbrace{[C(sI-A)^{-1}B + D]}^{H(s)}u(s)\) \\
+        \(H(s) = \frac{b_ms^m + \ldots + b_1s + b_0}{s^n + \ldots + a_1s + a_0} =
+            K_{\infty}\frac{s^m + \ldots + b_1's + b_0'}{s^n + \ldots + a_1's + a_0'} =
+            K_{\text{staz}\frac{\beta_ms^m + \ldots + \beta_1s + 1}{\alpha_ns^n + \ldots + \alpha_1s + 1}}\)
+                : fdt (SISO)
+        \begin{itemize}
+            \item \(m < n\): (\(b_m = D = 0\))
+            \item \(m = n\): (\(b_m = D \not=0\))
+        \end{itemize}
+        \(K_{\infty} = \lim_{s \to \infty}{\{s^{n-m}H(s)\}}\)
+        \(K_{\text{staz}} = \lim_{s \to 0}{\left\{\frac{H(s)}{s^n}\right\}}\) \\
+        NB: n diverso da quello riferito alle dim. delle matrici
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Movimento LTI TD]
+        \(\begin{cases}
+            x(k+1) = Ax(k) + Bu(k) \\
+            y = Cx(k) + Du(k)
+        \end{cases}\) \\
+        \(X(z) = Cz(zI-A)^{-1}x(0) + (zI-A)^{-1}Bu(z)\)
+        \(Y(z) = zC(zI-A)^{-1}x(0) + [C(zI-A)^{-1}B + D]u(z)\)
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Analisi modale LTI TC]
+        \begin{itemize}
+            \item autovalori semplici $\mu = 1$
+                \begin{itemize}
+                    \item $\Re(\lambda) < 0$: esp. convergente
+                    \item $\Re(\lambda) = 0$: limitato cost.
+                    \item $\Re(\lambda) > 0$: esp. divergente
+                \end{itemize}
+            \item autovalori multipli $\mu > 1$
+                \begin{itemize}
+                    \item $\Re(\lambda) < 0$: esp. convergente
+                    \item $\Re(\lambda) = 0$: polinom. divergente
+                    \item $\Re(\lambda) > 0$: esp. divergente
+                \end{itemize}
+        \end{itemize}
+        Costante di tempo \(\tau = \left\lvert \frac{1}{\Re(\lambda)} \right\rvert \)
+        \begin{itemize}
+            \item modi reali: \(e^{-\lambda t}, \lambda\) reale
+            \item modi complessi:
+                                   \( e^{\sigma t}\cos(\omega t), e^{\sigma t}\sin(\omega t),  \lambda_i = \sigma \pm j\omega \)
+        \end{itemize}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Analisi modale LTI TD]
+        \begin{itemize}
+            \item autovalori semplici $\mu = 1$
+                \begin{itemize}
+                    \item $|\lambda| < 0$: geom. convergente
+                    \item $|\lambda| = 0$: limitato
+                    \item $|\lambda| > 0$: geom. divergente
+                \end{itemize}
+                se $\lambda < 0$ e reale modi alternati \\
+                se $\lambda$ complesso limitato diventa limitato oscill.
+            \item autovalori multipli $\mu > 1$
+                \begin{itemize}
+                    \item $|\lambda| < 0$: geom. convergente
+                    \item $|\lambda| = 0$: polinom. divergente
+                    \item $|\lambda| > 0$: geom. divergente
+                \end{itemize}
+                se $\lambda < 0$ e reale modi alternati \\
+
+        \end{itemize}
+        \begin{itemize}
+            \item modi reali: \(\lambda^k, \lambda\) reale
+            \item modi complessi:   
+        \end{itemize}
+        \(   k^{\mu'}v^k\cos(\theta k), \ldots,  kv^k\cos(\theta k), v^k\cos(\theta k) \) \\
+        \( k^{\mu'}v^k\sin(\theta k), \ldots,  kv^k\sin(\theta k), v^k\sin(\theta k) \) \\
+        \(\lambda = \sigma \pm j\omega = ve^{\pm j\theta}, \mu' \le \mu\)
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Condizione equilibrio]
+        sistemi TC \\
+            \(\begin{cases}
+                \dot{x}(t) = 0 = f(\overline{x}, \overline{u}) \\
+                y(t) = \overline{y} = g(\overline{x}, \overline{u})
+            \end{cases}\) \\
+        sistemi TD \\
+            \(\begin{cases}
+                x(k+1) = x(k) = \overline{x} = f(\overline{x}, \overline{u}) \\
+                y(t) = \overline{y} = g(\overline{x}, \overline{u})
+            \end{cases}\)
+        NB: nel caso TD portare tutto a sx per ogni eq. lasciando a 0 il membro destro
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Linearizzazione sistemi NL]
+        \(\begin{cases}
+                \delta \dot{x}(t) = A(t)\delta x(t) + B(t) \delta u(t) \\
+                \delta y(t) = C(t)\delta x(t) + D(t) \delta u(t)
+            \end{cases}\) \\
+        \(A(t) = \pdv{f(x,u)}{x}|_{x=\tilde{x}, u=\tilde{u}}\) \\
+        \(B(t) = \pdv{f(x,u)}{u}|_{x=\tilde{x}, u=\tilde{u}}\) \\
+        \(C(t) = \pdv{g(x,u)}{x}|_{x=\tilde{x}, u=\tilde{u}}\) \\
+        \(D(t) = \pdv{g(x,u)}{u}|_{x=\tilde{x}, u=\tilde{u}}\) \\
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Stabilità interna sistemi LTI TC]
+        \begin{itemize}
+            \item asintotica stabilità: \(\forall i: \Re(\lambda_i(A)) < 0\)
+            \item instabilità: \(\exists i: \Re(\lambda_i(A)) > 0\)
+            \item semplice stabilità:
+                \begin{itemize}
+                    \item \(\Re(\lambda_i(A)) \le 0\)
+                    \item \(\exists k: \Re(\lambda_k(A)) =0\)
+                    \item \(\forall k: \Re(\lambda_k(A)) =0 \land \mu_k=1\)
+                \end{itemize}
+            \item instabilità o semplice stabilità
+                \begin{itemize}
+                    \item \(\Re(\lambda_i(A)) \le 0\)
+                    \item \(\exists k: \Re(\lambda_k(A)) =0 \land \mu_k>1\)
+                \end{itemize}
+        \end{itemize}
+    \end{tcolorbox}
+
+
+    \begin{tcolorbox}[ black_style, title = Stabilità interna sistemi LTI TD]
+        \begin{itemize}
+            \item asintotica stabilità: \(\forall i: |\lambda_i(A)| < 1\)
+            \item instabilità: \(\exists i: |\lambda_i(A)| > 1\)
+            \item semplice stabilità:
+                \begin{itemize}
+                    \item \(|\lambda_i(A)| \le 1\)
+                    \item \(\exists k: |\lambda_k(A)| =1\)
+                    \item \(\forall k: |\lambda_k(A)| =1 \land \mu_k=1\)
+                \end{itemize}
+            \item instabilità o semplice stabilità
+                \begin{itemize}
+                    \item \(|\lambda_i(A)| \le 1\)
+                    \item \(\exists k: |\lambda_k(A)| =1 \land \mu_k>1\)
+                \end{itemize}
+        \end{itemize}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Criteri di stabilità]
+        Dato un generico polinomio \(p(\lambda) = a_n\lambda^n + a_{n-1}\lambda^{n-1} + \dots + a_1\lambda + a_0\) \\
+        Per sistemi TC
+        \begin{itemize}
+            \item se \(n = 2\) \textbf{regola dei segni}: condizione \textit{necessaria e sufficiente} per tutte radici con \(\Re(\lambda) < 0\) è che \(a_n\) coefficenti del polin. siano di segno concorde
+            \item se \(n > 2\) \textbf{tabella di Routh}: condizione \textit{necessaria e sufficiente} per tutte radici con \(\Re(\lambda) < 0\) sono
+                        \begin{itemize}
+                            \item se gli elementi della 1° colonna hanno segno concorde
+                            \item se gli elementi della 1° colonna non hanno segno concorde, ci sono tante radici di \(p(\lambda)\) con \(\Re(\lambda) > 0\) quante sono le variazioni di segno
+                        \end{itemize}
+        \end{itemize}
+        Per sistemi TD \textbf{tabella di Jury}
+        \begin{itemize}
+            \item se \(n=2\): \(p(\lambda=1)>0 \land (-1)^np(\lambda=-1)>0 \land |a_n|>|a_0|\)
+            \item se \(n>2\): \(p(\lambda=1)>0 \land (-1)^np(\lambda=-1)>0 \land |a_n|>|a_0| \land |b_n|>|b_0| \land |c_n|>|c_0| \land \ldots \land |z_n|>|z_0|\)
+        \end{itemize}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Stabilità interna sistemi NL]
+        Sistemi TC: non si può concludere nulla se \(\forall i: \Re(\lambda_i(A)) \le 0 \land \exists k: \Re(\lambda_i(A)) = 0\) \\
+        Sistemi TD: non si può concludere nulla se \(\forall i: |\lambda_i(A)| \le 0 \land \exists k: |\lambda_i(A)| = 0\) \\
+        In entrambi i casi il resto è identico ai sistemi LTI
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Raggiungibilità sistemi LTI]
+        \(M_R = \begin{bmatrix}
+            B & AB & \ldots & A^{n-1}B
+        \end{bmatrix}\)
+    
+        \begin{itemize}
+            \item se \(\rank(M_R) = n \implies \) sistema complet. raggiungibile
+            \item se \(\rank(M_R) < n \implies\) sistema non complet. raggiungibile
+        \end{itemize}
+
+        NB: se \(\det(M_R) = 0 \implies \rank(M_R) < n\) se e solo se \(p = 1\) con \(B \in \mathbb{R}^{n \times p}\)
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Osservabilità sistemi LTI]
+        \(M_O = \begin{bmatrix}
+            C \\
+            CA \\
+            \dots \\
+            CA^{n-1}
+        \end{bmatrix}\)
+
+        \begin{itemize}
+            \item se \(\rank(M_O) = n \implies \) sistema complet. osservabile
+            \item se \(\rank(M_O) < n \implies\) sistema non complet. osservabile
+        \end{itemize}
+
+        NB: se \(\det(M_R) = 0 \implies \rank(M_R) < n\) se e solo se \(p = 1\) con \(B \in \mathbb{R}^{n \times p}\)
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Retroazione statica dello stato]
+        \(u(t) = -Kx(t) + \alpha r(t)\) retroazione \\
+        \(\begin{cases}
+            \dot{x}(t) = (A-BK)x(t) + B\alpha r(t) \\
+            y(t) = (C-DK)x(t) + D\alpha r(t)
+        \end{cases}\) \\
+        \(H(s) = \{(C-DK)[sI - (A-BK)]^{-1}B + D\}\alpha\) matrice di trasferimento tra $r(t)$ e $y(t)$\\
+        L'obiettivo è trovare la matrice dei guadagni $K$ in modo da assegnare tutti gli $n$ autovalori alla matrice $A-BK$.
+        Per fare ciò si pone \(p_{\text{des}}(\lambda) = p_{A-BK}(\lambda)\) se e solo se il sistema è \underline{complet. raggiungibile}.
+        \begin{itemize}
+            \item \(p_{\text{des}}(\lambda) = \prod_{i=1}^{n}{(\lambda - \lambda_{\text{des}_i})}\)
+            \item \(p_{A-BK}(\lambda) = \det(\lambda I - (A-BK))\)
+        \end{itemize}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Stima dello stato]
+        Quando non è possibile accedere agli stati interni di un sistema in retroazione statica sarà necessario usare un \textit{osservatore}. \\
+        L'obiettivo è trovare la matrice dei guadagni $L = \begin{bmatrix}
+            l_1 \\
+            l_2 \\
+            \dots \\
+            \l_n
+        \end{bmatrix}$ in modo da assegnare tutti gli $n$ autovalori alla matrice $A-LC$.
+        Per fare ciò si pone \(p_{\text{des}}(\lambda) = p_{A-LC}(\lambda)\) se e solo se il sistema è \underline{complet. osservabile}.
+        \begin{itemize}
+            \item \(p_{\text{des}}(\lambda) = \prod_{i=1}^{n}{(\lambda - \lambda_{\text{des}_i})}\)
+            \item \(p_{A-LC}(\lambda) = \det(\lambda I - (A-LC))\)
+        \end{itemize}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Regolatore dinamico sistema LTI]
+        Dopo aver controllato che il sistema sia \underline{complet. raggiungibile} e \underline{complet. osservabile} (\textit{forma minima}) si progetta il controllore attraverso il calcolo di $K$ ed $L$. \\
+        La matrice di trasferimento di un sistema controllato con il regolatore vale
+        \(H(s) = \{(C-DK)[sI - (A-BK)]^{-1}B + D\}\alpha\)
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Stabilità esterna]
+        Data \(H(s)\) la matrice di trasferimento, per ogni funzione \(H_{ij}(s)\) con poli $w_p$:
+        \begin{itemize}
+            \item sistema TC BIBO stabile se tutti i poli \(w_p: \Re(w_p) < 0\)
+            \item sistema TD BIBO stabile se tutti i poli \(w_p: |w_p| < 1\)
+        \end{itemize}
+        Sistema LTI ha forma minima ed è esternamente stabile $\Leftrightarrow$ asintoticamente stabile 
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Risposta a regime]
+        Prima di procedere con i calcoli \textbf{controllare se $H(s)$ è BIBO} \\
+        In generale la risposta a regime si ottiene
+        \(\boxed{y_{\infty}} = \lim_{t \rightarrow \infty}{y(t)} = \lim_{s \rightarrow 0}{sY(s)} = \lim_{s \rightarrow 0}{\frac{Y(s)}{U(s)}U(s)} =\boxed{ \lim_{s \rightarrow 0}{H(s)U(s)}}\)
+        \begin{itemize}
+            \item \textbf{ingresso costante} \(u(t) = \overline{u}\varepsilon (t)\) \\
+                \(y_{\text{part}}(t) = \overline{y}\varepsilon(t) = -CA^{-1}B\overline{u}\varepsilon(t)\)
+                con \(\overline{y} = |H(0)|\overline{u}\)
+            \item \textbf{ingresso rampa} \\ \(u(t) = \overline{u}t\) \\
+                \(y_{\text{part}} = \lim_{s \to 0}{\{H(s) \cdot \frac{\overline{u}}{s}}\}\)
+            \item  \textbf{ingresso sinusoidale}
+                \(u(t) = \overline{u}\sin(w_0t + \theta_0)\varepsilon(t)\) \\
+                \(y_{\text{part}}(t) = \overline{y}\sin(w_0t + \varphi)\varepsilon(t)\) \\
+                con
+                \(\overline{y} = |H(jw_0)|\overline{u}\) \\
+                \(\varphi = \arg(H(jw_0)) + \theta_0\)
+        \end{itemize}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Risposte di sistemi 1° e 2° ordine]
+        \textbf{Risposta 1° ordine} \\
+        \(H(s) = \frac{K}{1 + \tau s}\)
+        con $\tau$ il tempo per cui la risposta raggiunge il $63\%$ di $y_{\infty}$ \\
+        \textbf{Risposta 2° ordine} \\
+        \(H(s) = K\frac{w_n^2}{s^2 + 2\zeta w_ns + w_n^2}\) \\
+        con
+        \begin{itemize}
+            \item \(K = \frac{y_{\infty}}{\overline{u}}\) guadagno su polo
+            \item \(\hat{s} = \frac{y_{\max} - y_{\infty}}{y_{\infty}}\) sovraelongazione massima
+            \item \(\zeta = \frac{|\ln(\hat{s})|}{\sqrt{\pi^2 + \ln(\hat{s})^2}}\) smorzamento (damping)
+            \item \(\hat{t} = \frac{\pi}{w_n\sqrt{1 - \zeta^2}}\) tempo di picco
+            \item \(t_s \simeq \frac{2.16\zeta + 0.6}{w_n}\) tempo di salita
+        \end{itemize}
+        poli concordi $\Rightarrow$ funzione monotona \\
+        se cambia concavità $\Rightarrow$ 2° ordine
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Sistemi meccanici]
+        \(M_i\ddot{p}_i(t) = \sum_k{F_k^{\text{est}}} - \sum_{j \not= i}{F_{ij}^{\text{int}}}\) \\
+        \(J_i\ddot{\theta}_i(t) = \sum_k{T_k^{\text{est}}} - \sum_{j \not= i}{T_{ij}^{\text{int}}}\) \\
+        \(F_{ij}^{\text{int}} = K_{ij}[p_i - p_j] + \beta_{ij}[\dot{p}_i - \dot{p}_j]\)
+        \(T_{ij}^{\text{int}} = K_{ij}[\theta_i - \theta_j] + \beta_{ij}[\dot{\theta}_i - \dot{\theta}_j]\) \\
+        Var. stato: \(\{p_i, \dot{p}_i \} \vee \{ \theta_i, \dot{\theta}_i \}\) \\
+        Var. ingresso: \(\{F_k^{\text{est}}\} \vee \{T_k^{\text{est}}\}\) \\
+        NB: \(J=Ml^2\) inerzia del pendolo \\
+        NB: corpo $i$ senza massa \textbf{no stato}
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Tabella di Routh]
+        \scalebox{0.8}{
+            $
+                \begin{NiceArray}{lIcIcccc}[hvlines, custom-line = {letter=I, color=blue}]
+                    \CodeBefore
+                    \rectanglecolor{red!15}{1-2}{2-2}
+                    \rectanglecolor{orange!15}{1-3}{2-3}
+                    \rectanglecolor{green!15}{1-4}{2-4}
+                    \Body
+                    n & a_n & a_{n-2} & a_{n-4} & \ldots & 0 \\
+                    n-1 & a_{n-1} & a_{n-3} & a_{n-5} & \ldots & 0 \\
+                    n-2 & b_{n-2} & b_{n-4} & b_{n-6} & \ldots & 0 \\
+                    n-3 & c_{n-3} & c_{n-5} & c_{n-7} & \ldots & 0 \\
+                    \ldots & \ldots & \ldots & \ldots & \ldots & \ldots \\
+                    0 & a_0 & 0 & 0 & \ldots & \ldots
+                \end{NiceArray}
+            $
+        }
+
+        \(b_{n-2} = -\frac{1}{\boxed{a_{n-1}}}\begin{vNiceMatrix}
+            \CodeBefore
+            \rectanglecolor{red!15}{1-1}{2-1}
+            \rectanglecolor{orange!15}{1-2}{2-2}
+            \Body
+            a_n & a_{n-2} \\
+            \boxed{a_{n-1}} & a_{n-3}
+        \end{vNiceMatrix}\)
+
+        \(b_{n-4} = -\frac{1}{\boxed{a_{n-1}}}\begin{vNiceMatrix}
+            \CodeBefore
+            \rectanglecolor{red!15}{1-1}{2-1}
+            \rectanglecolor{green!15}{1-2}{2-2}
+            \Body
+            a_n & a_{n-4} \\
+            \boxed{a_{n-1}} & a_{n-5}
+        \end{vNiceMatrix}\)
+
+        e di conseguenza seguendo il pattern evidenziato dai colori
+
+        \(c_{n-3} = -\frac{1}{b_{n-2}}\begin{vmatrix}
+            a_{n-1} & a_{n-3} \\
+            b_{n-2} & b_{n-4}
+        \end{vmatrix}\)
+
+        \(c_{n-5} = -\frac{1}{b_{n-2}}\begin{vmatrix}
+            a_{n-1} & a_{n-5} \\
+            b_{n-2} & b_{n-6}
+        \end{vmatrix}\)
+
+        e così via \ldots
+
+        NB: si ricordi che se \(A = \begin{bmatrix}
+            ...
+        \end{bmatrix}\) allora \(\det(A) = \begin{vmatrix}
+            ...
+        \end{vmatrix}\)
+
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[ black_style, title = Tabella di Jury]
+
+        \scalebox{0.65}{
+            $
+                \begin{NiceArray}{lccccccc}[hvlines]
+                    \CodeBefore
+                    \rectanglecolor{red!55}{1-2}{2-2}
+                    \rectanglecolor{orange!60}{1-8}{2-8}
+                    \rectanglecolor{green!30}{1-7}{2-7}
+                    \rectanglecolor{purple!45}{3-2}{4-2}
+                    \rectanglecolor{brown!50}{3-7}{4-7}
+                    \rectanglecolor{pink}{3-6}{4-6}
+                    \Body
+                    n & a_0 & a_1 & a_2 & \ldots & a_{n-2} & a_{n-1} & a_n \\
+                    n & a_n & a_{n-1} & a_{n-2} & \ldots & a_2 & a_1 & a_0 \\
+                    n-1 & \textcolor{blue}{b_0} & b_1 & b_2 & \ldots & b_{n-2} & \textcolor{blue}{b_{n-1}} &  \\
+                    n-1 & b_n & b_{n-1} & b_{n-2} & \ldots & b_2 & b_1 &  \\
+                    n-2 & \textcolor{blue}{c_0} & c_1 & c_2 & \ldots & \textcolor{blue}{c_n} & & \\ 
+                    n-2 & c_0 & c_1 & c_2 & \ldots & c_{n-2} & & \\ 
+                    \ldots & \ldots & \ldots & \ldots & & & & \\
+                    2 & \textcolor{blue}{z_0} & z_1 & \textcolor{blue}{z_2} & & & & \\
+                    2 & z_2 & z_1 & z_0
+                \end{NiceArray}
+            $
+        }
+
+        \(b_{0} = \begin{vNiceMatrix}
+            \CodeBefore
+            \rectanglecolor{red!55}{1-1}{2-1}
+            \rectanglecolor{orange!60}{1-2}{2-2}
+            \Body
+            a_0 & a_n \\
+            a_n & a_0
+        \end{vNiceMatrix}\)
+
+        \(b_{1} = \begin{vNiceMatrix}
+            \CodeBefore
+            \rectanglecolor{red!55}{1-1}{2-1}
+            \rectanglecolor{green!30}{1-2}{2-2}
+            \Body
+            a_0 & a_{n-1} \\
+            a_{n} & a_1
+        \end{vNiceMatrix}\)
+
+        \(c_{0} = \begin{vNiceMatrix}
+            \CodeBefore
+            \rectanglecolor{purple!45}{1-1}{2-1}
+            \rectanglecolor{brown!50}{1-2}{2-2}
+            \Body
+            b_0 & b_{n-1} \\
+            b_{n-1} & b_0
+        \end{vNiceMatrix}\)
+
+        \(c_{1} = \begin{vNiceMatrix}
+            \CodeBefore
+            \rectanglecolor{purple!45}{1-1}{2-1}
+            \rectanglecolor{pink}{1-2}{2-2}
+            \Body
+            b_0 & b_{n-2} \\
+            b_{n-1} & b_1
+        \end{vNiceMatrix}\)
+
+        e così via \ldots
+
+        NB: si ricordi che se \(A = \begin{bmatrix}
+            ...
+        \end{bmatrix}\) allora \(\det(A) = \begin{vmatrix}
+            ...
+        \end{vmatrix}\)
+
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[blue_style, title = Goniometria]
+        Addizione e sottrazione \\
+        \(\sin(\alpha \pm \beta) = \sin(\alpha)\cos(\beta) \pm \cos(\alpha)\sin(\beta)\) \\
+        \(\cos(\alpha \pm \beta) = \cos(\alpha)\cos(\beta) \mp \sin(\alpha)\sin(\beta)\) \\
+        Duplicazione \\
+        \(\sin(2\alpha) = 2\sin(\alpha)\cos(\alpha)\) \\
+        \(\cos(2\alpha) = \cos^2(\alpha) - \sin^2(\alpha)\) \\
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[blue_style, title = Numeri complessi]
+        \(z = a+jb\) \\
+        \(j^2 = -1\) \\
+        \(z = |z|e^{j\varphi}\) con \(\varphi = \arg(z)\)\\
+        \(\varphi = \arctan(\frac{\Im(z)}{\Re(z)})\) \\
+        Prodotto \\
+        \(z_1z_2=|z_1||z_2|e^{j(\varphi_1\varphi_2)}\) \\
+        Rapporto \\
+        \(\frac{z_1}{z_2} = \frac{ac + bd}{c^2 + d^2} + j\frac{cb - ad}{c^2 + d^2}\) \\
+        Potenze \\
+        \(z^n = |z|^n(\cos(n\varphi) +j\sin(n\varphi))\)
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[blue_style, title = Calcolo matriciale]
+        \(\text{cof}_{ij}(A) = (-1)^{i+j} \cdot A_{(ij)}\)
+        con \(A_{(ij)}\) il det di $A$ togliendo riga $i$ e colonna $j$ \\
+        \(A^{-1} = \frac{1}{\det(A)} \cdot (\text{cof}(A))^T\) \\
+    \end{tcolorbox}
+
+    \begin{tcolorbox}[blue_style, title = Regole derivazione]
+        \(D[\frac{f(t)}{g(t)}] = \frac{f'(t)g(t) - f(t)g'(t)}{g^2(t)}\) rapporto \\
+        
+    \end{tcolorbox}
+
+\end{multicols}
+
+\end{document}
